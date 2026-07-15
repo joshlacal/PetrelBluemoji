@@ -1,0 +1,664 @@
+import Foundation
+import Petrel
+
+// lexicon: 1, id: blue.moji.packs.defs
+
+public enum BlueMojiPacksDefs {
+    public static let typeIdentifier = "blue.moji.packs.defs"
+
+    public struct PackViewBasic: ATProtocolCodable, ATProtocolValue {
+        public static let typeIdentifier = "blue.moji.packs.defs#packViewBasic"
+        public let uri: ATProtocolURI
+        public let cid: CID
+        public let name: String
+        public let description: String?
+        public let descriptionFacets: [BlueMojiRichtextFacet]?
+        public let avatar: URI?
+        public let itemCount: Int?
+        public let labels: [ComAtprotoLabelDefs.Label]?
+        public let viewer: PackViewerState?
+        public let indexedAt: ATProtocolDate?
+
+        public init(
+            uri: ATProtocolURI, cid: CID, name: String, description: String?, descriptionFacets: [BlueMojiRichtextFacet]?, avatar: URI?, itemCount: Int?, labels: [ComAtprotoLabelDefs.Label]?, viewer: PackViewerState?, indexedAt: ATProtocolDate?
+        ) {
+            self.uri = uri
+            self.cid = cid
+            self.name = name
+            self.description = description
+            self.descriptionFacets = descriptionFacets
+            self.avatar = avatar
+            self.itemCount = itemCount
+            self.labels = labels
+            self.viewer = viewer
+            self.indexedAt = indexedAt
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            do {
+                uri = try container.decode(ATProtocolURI.self, forKey: .uri)
+            } catch {
+                LogManager.logError("Decoding error for required property 'uri': \(error)")
+                throw error
+            }
+            do {
+                cid = try container.decode(CID.self, forKey: .cid)
+            } catch {
+                LogManager.logError("Decoding error for required property 'cid': \(error)")
+                throw error
+            }
+            do {
+                name = try container.decode(String.self, forKey: .name)
+            } catch {
+                LogManager.logError("Decoding error for required property 'name': \(error)")
+                throw error
+            }
+            do {
+                description = try container.decodeIfPresent(String.self, forKey: .description)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'description' — degrading to nil: \(error)")
+                description = nil
+            }
+            do {
+                descriptionFacets = try container.decodeIfPresent([BlueMojiRichtextFacet].self, forKey: .descriptionFacets)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'descriptionFacets' — degrading to nil: \(error)")
+                descriptionFacets = nil
+            }
+            do {
+                avatar = try container.decodeIfPresent(URI.self, forKey: .avatar)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'avatar' — degrading to nil: \(error)")
+                avatar = nil
+            }
+            do {
+                itemCount = try container.decodeIfPresent(Int.self, forKey: .itemCount)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'itemCount' — degrading to nil: \(error)")
+                itemCount = nil
+            }
+            do {
+                labels = try container.decodeIfPresent([ComAtprotoLabelDefs.Label].self, forKey: .labels)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'labels' — degrading to nil: \(error)")
+                labels = nil
+            }
+            do {
+                viewer = try container.decodeIfPresent(PackViewerState.self, forKey: .viewer)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'viewer' — degrading to nil: \(error)")
+                viewer = nil
+            }
+            do {
+                indexedAt = try container.decodeIfPresent(ATProtocolDate.self, forKey: .indexedAt)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'indexedAt' — degrading to nil: \(error)")
+                indexedAt = nil
+            }
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(Self.typeIdentifier, forKey: .typeIdentifier)
+            try container.encode(uri, forKey: .uri)
+            try container.encode(cid, forKey: .cid)
+            try container.encode(name, forKey: .name)
+            try container.encodeIfPresent(description, forKey: .description)
+            try container.encodeIfPresent(descriptionFacets, forKey: .descriptionFacets)
+            try container.encodeIfPresent(avatar, forKey: .avatar)
+            try container.encodeIfPresent(itemCount, forKey: .itemCount)
+            try container.encodeIfPresent(labels, forKey: .labels)
+            try container.encodeIfPresent(viewer, forKey: .viewer)
+            try container.encodeIfPresent(indexedAt, forKey: .indexedAt)
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(uri)
+            hasher.combine(cid)
+            hasher.combine(name)
+            if let value = description {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = descriptionFacets {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = avatar {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = itemCount {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = labels {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = viewer {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = indexedAt {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+        }
+
+        public func isEqual(to other: any ATProtocolValue) -> Bool {
+            guard let other = other as? Self else { return false }
+            if uri != other.uri {
+                return false
+            }
+            if cid != other.cid {
+                return false
+            }
+            if name != other.name {
+                return false
+            }
+            if description != other.description {
+                return false
+            }
+            if descriptionFacets != other.descriptionFacets {
+                return false
+            }
+            if avatar != other.avatar {
+                return false
+            }
+            if itemCount != other.itemCount {
+                return false
+            }
+            if labels != other.labels {
+                return false
+            }
+            if viewer != other.viewer {
+                return false
+            }
+            if indexedAt != other.indexedAt {
+                return false
+            }
+            return true
+        }
+
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            return lhs.isEqual(to: rhs)
+        }
+
+        public func toCBORValue() throws -> Any {
+            var map = OrderedCBORMap()
+            map = map.adding(key: "$type", value: Self.typeIdentifier)
+            let uriValue = try uri.toCBORValue()
+            map = map.adding(key: "uri", value: uriValue)
+            let cidValue = try cid.toCBORValue()
+            map = map.adding(key: "cid", value: cidValue)
+            let nameValue = try name.toCBORValue()
+            map = map.adding(key: "name", value: nameValue)
+            if let value = description {
+                let descriptionValue = try value.toCBORValue()
+                map = map.adding(key: "description", value: descriptionValue)
+            }
+            if let value = descriptionFacets {
+                let descriptionFacetsValue = try value.toCBORValue()
+                map = map.adding(key: "descriptionFacets", value: descriptionFacetsValue)
+            }
+            if let value = avatar {
+                let avatarValue = try value.toCBORValue()
+                map = map.adding(key: "avatar", value: avatarValue)
+            }
+            if let value = itemCount {
+                let itemCountValue = try value.toCBORValue()
+                map = map.adding(key: "itemCount", value: itemCountValue)
+            }
+            if let value = labels {
+                let labelsValue = try value.toCBORValue()
+                map = map.adding(key: "labels", value: labelsValue)
+            }
+            if let value = viewer {
+                let viewerValue = try value.toCBORValue()
+                map = map.adding(key: "viewer", value: viewerValue)
+            }
+            if let value = indexedAt {
+                let indexedAtValue = try value.toCBORValue()
+                map = map.adding(key: "indexedAt", value: indexedAtValue)
+            }
+            return map
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case typeIdentifier = "$type"
+            case uri
+            case cid
+            case name
+            case description
+            case descriptionFacets
+            case avatar
+            case itemCount
+            case labels
+            case viewer
+            case indexedAt
+        }
+    }
+
+    public struct PackView: ATProtocolCodable, ATProtocolValue {
+        public static let typeIdentifier = "blue.moji.packs.defs#packView"
+        public let uri: ATProtocolURI
+        public let cid: CID
+        public let creator: AppBskyActorDefs.ProfileView
+        public let name: String
+        public let description: String?
+        public let descriptionFacets: [AppBskyRichtextFacet]?
+        public let avatar: URI?
+        public let packItemCount: Int?
+        public let labels: [ComAtprotoLabelDefs.Label]?
+        public let viewer: PackViewerState?
+        public let indexedAt: ATProtocolDate
+
+        public init(
+            uri: ATProtocolURI, cid: CID, creator: AppBskyActorDefs.ProfileView, name: String, description: String?, descriptionFacets: [AppBskyRichtextFacet]?, avatar: URI?, packItemCount: Int?, labels: [ComAtprotoLabelDefs.Label]?, viewer: PackViewerState?, indexedAt: ATProtocolDate
+        ) {
+            self.uri = uri
+            self.cid = cid
+            self.creator = creator
+            self.name = name
+            self.description = description
+            self.descriptionFacets = descriptionFacets
+            self.avatar = avatar
+            self.packItemCount = packItemCount
+            self.labels = labels
+            self.viewer = viewer
+            self.indexedAt = indexedAt
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            do {
+                uri = try container.decode(ATProtocolURI.self, forKey: .uri)
+            } catch {
+                LogManager.logError("Decoding error for required property 'uri': \(error)")
+                throw error
+            }
+            do {
+                cid = try container.decode(CID.self, forKey: .cid)
+            } catch {
+                LogManager.logError("Decoding error for required property 'cid': \(error)")
+                throw error
+            }
+            do {
+                creator = try container.decode(AppBskyActorDefs.ProfileView.self, forKey: .creator)
+            } catch {
+                LogManager.logError("Decoding error for required property 'creator': \(error)")
+                throw error
+            }
+            do {
+                name = try container.decode(String.self, forKey: .name)
+            } catch {
+                LogManager.logError("Decoding error for required property 'name': \(error)")
+                throw error
+            }
+            do {
+                description = try container.decodeIfPresent(String.self, forKey: .description)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'description' — degrading to nil: \(error)")
+                description = nil
+            }
+            do {
+                descriptionFacets = try container.decodeIfPresent([AppBskyRichtextFacet].self, forKey: .descriptionFacets)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'descriptionFacets' — degrading to nil: \(error)")
+                descriptionFacets = nil
+            }
+            do {
+                avatar = try container.decodeIfPresent(URI.self, forKey: .avatar)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'avatar' — degrading to nil: \(error)")
+                avatar = nil
+            }
+            do {
+                packItemCount = try container.decodeIfPresent(Int.self, forKey: .packItemCount)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'packItemCount' — degrading to nil: \(error)")
+                packItemCount = nil
+            }
+            do {
+                labels = try container.decodeIfPresent([ComAtprotoLabelDefs.Label].self, forKey: .labels)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'labels' — degrading to nil: \(error)")
+                labels = nil
+            }
+            do {
+                viewer = try container.decodeIfPresent(PackViewerState.self, forKey: .viewer)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'viewer' — degrading to nil: \(error)")
+                viewer = nil
+            }
+            do {
+                indexedAt = try container.decode(ATProtocolDate.self, forKey: .indexedAt)
+            } catch {
+                LogManager.logError("Decoding error for required property 'indexedAt': \(error)")
+                throw error
+            }
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(Self.typeIdentifier, forKey: .typeIdentifier)
+            try container.encode(uri, forKey: .uri)
+            try container.encode(cid, forKey: .cid)
+            try container.encode(creator, forKey: .creator)
+            try container.encode(name, forKey: .name)
+            try container.encodeIfPresent(description, forKey: .description)
+            try container.encodeIfPresent(descriptionFacets, forKey: .descriptionFacets)
+            try container.encodeIfPresent(avatar, forKey: .avatar)
+            try container.encodeIfPresent(packItemCount, forKey: .packItemCount)
+            try container.encodeIfPresent(labels, forKey: .labels)
+            try container.encodeIfPresent(viewer, forKey: .viewer)
+            try container.encode(indexedAt, forKey: .indexedAt)
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(uri)
+            hasher.combine(cid)
+            hasher.combine(creator)
+            hasher.combine(name)
+            if let value = description {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = descriptionFacets {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = avatar {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = packItemCount {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = labels {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = viewer {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            hasher.combine(indexedAt)
+        }
+
+        public func isEqual(to other: any ATProtocolValue) -> Bool {
+            guard let other = other as? Self else { return false }
+            if uri != other.uri {
+                return false
+            }
+            if cid != other.cid {
+                return false
+            }
+            if creator != other.creator {
+                return false
+            }
+            if name != other.name {
+                return false
+            }
+            if description != other.description {
+                return false
+            }
+            if descriptionFacets != other.descriptionFacets {
+                return false
+            }
+            if avatar != other.avatar {
+                return false
+            }
+            if packItemCount != other.packItemCount {
+                return false
+            }
+            if labels != other.labels {
+                return false
+            }
+            if viewer != other.viewer {
+                return false
+            }
+            if indexedAt != other.indexedAt {
+                return false
+            }
+            return true
+        }
+
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            return lhs.isEqual(to: rhs)
+        }
+
+        public func toCBORValue() throws -> Any {
+            var map = OrderedCBORMap()
+            map = map.adding(key: "$type", value: Self.typeIdentifier)
+            let uriValue = try uri.toCBORValue()
+            map = map.adding(key: "uri", value: uriValue)
+            let cidValue = try cid.toCBORValue()
+            map = map.adding(key: "cid", value: cidValue)
+            let creatorValue = try creator.toCBORValue()
+            map = map.adding(key: "creator", value: creatorValue)
+            let nameValue = try name.toCBORValue()
+            map = map.adding(key: "name", value: nameValue)
+            if let value = description {
+                let descriptionValue = try value.toCBORValue()
+                map = map.adding(key: "description", value: descriptionValue)
+            }
+            if let value = descriptionFacets {
+                let descriptionFacetsValue = try value.toCBORValue()
+                map = map.adding(key: "descriptionFacets", value: descriptionFacetsValue)
+            }
+            if let value = avatar {
+                let avatarValue = try value.toCBORValue()
+                map = map.adding(key: "avatar", value: avatarValue)
+            }
+            if let value = packItemCount {
+                let packItemCountValue = try value.toCBORValue()
+                map = map.adding(key: "packItemCount", value: packItemCountValue)
+            }
+            if let value = labels {
+                let labelsValue = try value.toCBORValue()
+                map = map.adding(key: "labels", value: labelsValue)
+            }
+            if let value = viewer {
+                let viewerValue = try value.toCBORValue()
+                map = map.adding(key: "viewer", value: viewerValue)
+            }
+            let indexedAtValue = try indexedAt.toCBORValue()
+            map = map.adding(key: "indexedAt", value: indexedAtValue)
+            return map
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case typeIdentifier = "$type"
+            case uri
+            case cid
+            case creator
+            case name
+            case description
+            case descriptionFacets
+            case avatar
+            case packItemCount
+            case labels
+            case viewer
+            case indexedAt
+        }
+    }
+
+    public struct PackItemView: ATProtocolCodable, ATProtocolValue {
+        public static let typeIdentifier = "blue.moji.packs.defs#packItemView"
+        public let uri: ATProtocolURI
+        public let subject: BlueMojiCollectionItem.ItemView
+
+        public init(
+            uri: ATProtocolURI, subject: BlueMojiCollectionItem.ItemView
+        ) {
+            self.uri = uri
+            self.subject = subject
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            do {
+                uri = try container.decode(ATProtocolURI.self, forKey: .uri)
+            } catch {
+                LogManager.logError("Decoding error for required property 'uri': \(error)")
+                throw error
+            }
+            do {
+                subject = try container.decode(BlueMojiCollectionItem.ItemView.self, forKey: .subject)
+            } catch {
+                LogManager.logError("Decoding error for required property 'subject': \(error)")
+                throw error
+            }
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(Self.typeIdentifier, forKey: .typeIdentifier)
+            try container.encode(uri, forKey: .uri)
+            try container.encode(subject, forKey: .subject)
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(uri)
+            hasher.combine(subject)
+        }
+
+        public func isEqual(to other: any ATProtocolValue) -> Bool {
+            guard let other = other as? Self else { return false }
+            if uri != other.uri {
+                return false
+            }
+            if subject != other.subject {
+                return false
+            }
+            return true
+        }
+
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            return lhs.isEqual(to: rhs)
+        }
+
+        public func toCBORValue() throws -> Any {
+            var map = OrderedCBORMap()
+            map = map.adding(key: "$type", value: Self.typeIdentifier)
+            let uriValue = try uri.toCBORValue()
+            map = map.adding(key: "uri", value: uriValue)
+            let subjectValue = try subject.toCBORValue()
+            map = map.adding(key: "subject", value: subjectValue)
+            return map
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case typeIdentifier = "$type"
+            case uri
+            case subject
+        }
+    }
+
+    public struct PackViewerState: ATProtocolCodable, ATProtocolValue {
+        public static let typeIdentifier = "blue.moji.packs.defs#packViewerState"
+        public let savedToCollection: Bool?
+
+        public init(
+            savedToCollection: Bool?
+        ) {
+            self.savedToCollection = savedToCollection
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            do {
+                savedToCollection = try container.decodeIfPresent(Bool.self, forKey: .savedToCollection)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'savedToCollection' — degrading to nil: \(error)")
+                savedToCollection = nil
+            }
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(Self.typeIdentifier, forKey: .typeIdentifier)
+            try container.encodeIfPresent(savedToCollection, forKey: .savedToCollection)
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            if let value = savedToCollection {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+        }
+
+        public func isEqual(to other: any ATProtocolValue) -> Bool {
+            guard let other = other as? Self else { return false }
+            if savedToCollection != other.savedToCollection {
+                return false
+            }
+            return true
+        }
+
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            return lhs.isEqual(to: rhs)
+        }
+
+        public func toCBORValue() throws -> Any {
+            var map = OrderedCBORMap()
+            map = map.adding(key: "$type", value: Self.typeIdentifier)
+            if let value = savedToCollection {
+                let savedToCollectionValue = try value.toCBORValue()
+                map = map.adding(key: "savedToCollection", value: savedToCollectionValue)
+            }
+            return map
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case typeIdentifier = "$type"
+            case savedToCollection
+        }
+    }
+}

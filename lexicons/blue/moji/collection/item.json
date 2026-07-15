@@ -8,34 +8,60 @@
       "key": "any",
       "record": {
         "type": "object",
-        "required": ["name", "createdAt", "formats"],
+        "required": [
+          "name",
+          "createdAt",
+          "formats"
+        ],
         "properties": {
           "name": {
             "type": "string",
             "description": "Should be in the format :emoji:"
           },
-          "alt": { "type": "string" },
-          "createdAt": { "type": "string", "format": "datetime" },
+          "alt": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          },
           "formats": {
             "type": "union",
             "description": "Open union to allow for future formats. #formats_v0 is deprecated: writers MUST write #formats_v1 (see RFC 0001 Adoption strategy / RFC 0005). Readers SHOULD continue to accept #formats_v0 for historical records.",
-            "refs": ["#formats_v0", "#formats_v1"],
+            "refs": [
+              "#formats_v0",
+              "#formats_v1"
+            ],
             "closed": false
           },
           "stickerFormats": {
             "type": "union",
             "description": "Optional full-size renditions for use as a sticker (post attachment via blue.moji.embed.sticker). Presence of this field marks the item as sticker-capable; items with only 'formats' are inline emoji.",
-            "refs": ["#stickerFormats_v0"],
+            "refs": [
+              "#stickerFormats_v0"
+            ],
             "closed": false
           },
-          "adultOnly": { "type": "boolean", "default": false },
+          "adultOnly": {
+            "type": "boolean",
+            "default": false
+          },
           "labels": {
             "type": "union",
             "description": "Self-label values for this emoji. Effectively content warnings.",
-            "refs": ["com.atproto.label.defs#selfLabels"]
+            "refs": [
+              "com.atproto.label.defs#selfLabels"
+            ]
           },
-          "copyOf": { "type": "string", "format": "at-uri" },
-          "fallbackText": { "type": "string", "maxLength": 1, "default": "◌" }
+          "copyOf": {
+            "type": "string",
+            "format": "at-uri"
+          },
+          "fallbackText": {
+            "type": "string",
+            "maxLength": 1,
+            "default": "\u25cc"
+          }
         }
       }
     },
@@ -45,14 +71,37 @@
       "properties": {
         "original": {
           "type": "blob",
-          "accept": ["image/*", "application/lottie+zip"],
+          "accept": [
+            "image/*",
+            "application/lottie+zip"
+          ],
           "maxSize": 1000000
         },
-        "png_128": { "type": "ref", "ref": "#blob_v0" },
-        "apng_128": { "type": "ref", "ref": "#bytes_v0" },
-        "gif_128": { "type": "ref", "ref": "#blob_v0" },
-        "webp_128": { "type": "ref", "ref": "#blob_v0" },
-        "lottie": { "type": "ref", "ref": "#bytes_v0" }
+        "png_128": {
+          "type": "blob",
+          "maxSize": 262144,
+          "description": "Limiting blobs to 256kb because there may be many on page and these get optimised by ImgProxy anyway"
+        },
+        "apng_128": {
+          "type": "bytes",
+          "maxLength": 65536,
+          "description": "64kb should be enough for anybody"
+        },
+        "gif_128": {
+          "type": "blob",
+          "maxSize": 262144,
+          "description": "Limiting blobs to 256kb because there may be many on page and these get optimised by ImgProxy anyway"
+        },
+        "webp_128": {
+          "type": "blob",
+          "maxSize": 262144,
+          "description": "Limiting blobs to 256kb because there may be many on page and these get optimised by ImgProxy anyway"
+        },
+        "lottie": {
+          "type": "bytes",
+          "maxLength": 65536,
+          "description": "64kb should be enough for anybody"
+        }
       }
     },
     "formats_v1": {
@@ -60,50 +109,76 @@
       "properties": {
         "original": {
           "type": "blob",
-          "accept": ["image/*", "application/lottie+zip"],
+          "accept": [
+            "image/*",
+            "application/lottie+zip"
+          ],
           "maxSize": 1000000
         },
-        "png_128": { "type": "ref", "ref": "#blob_v1" },
-        "apng_128": { "type": "ref", "ref": "#blob_v1" },
-        "gif_128": { "type": "ref", "ref": "#blob_v1" },
-        "webp_128": { "type": "ref", "ref": "#blob_v1" },
-        "lottie": { "type": "ref", "ref": "#blob_v1" }
+        "png_128": {
+          "type": "blob",
+          "maxSize": 128000,
+          "description": "Limiting blobs to 128kb because there may be many on page and these get optimised by ImgProxy anyway"
+        },
+        "apng_128": {
+          "type": "blob",
+          "maxSize": 128000,
+          "description": "Limiting blobs to 128kb because there may be many on page and these get optimised by ImgProxy anyway"
+        },
+        "gif_128": {
+          "type": "blob",
+          "maxSize": 128000,
+          "description": "Limiting blobs to 128kb because there may be many on page and these get optimised by ImgProxy anyway"
+        },
+        "webp_128": {
+          "type": "blob",
+          "maxSize": 128000,
+          "description": "Limiting blobs to 128kb because there may be many on page and these get optimised by ImgProxy anyway"
+        },
+        "lottie": {
+          "type": "blob",
+          "maxSize": 128000,
+          "description": "Limiting blobs to 128kb because there may be many on page and these get optimised by ImgProxy anyway"
+        }
       }
     },
     "stickerFormats_v0": {
       "type": "object",
-      "description": "Full-size (up to 512×512) renditions for sharing as a sticker. Raster formats should be exactly 512px on the longest edge.",
+      "description": "Full-size (up to 512\u00d7512) renditions for sharing as a sticker. Raster formats should be exactly 512px on the longest edge.",
       "properties": {
-        "png_512": { "type": "ref", "ref": "#blob_sticker" },
-        "webp_512": { "type": "ref", "ref": "#blob_sticker" },
-        "gif_512": { "type": "ref", "ref": "#blob_sticker" },
-        "apng_512": { "type": "ref", "ref": "#blob_sticker" },
-        "lottie": { "type": "ref", "ref": "#blob_sticker" }
+        "png_512": {
+          "type": "blob",
+          "maxSize": 512000,
+          "description": "Stickers render one-per-post at full size, so a larger budget than inline emoji is acceptable."
+        },
+        "webp_512": {
+          "type": "blob",
+          "maxSize": 512000,
+          "description": "Stickers render one-per-post at full size, so a larger budget than inline emoji is acceptable."
+        },
+        "gif_512": {
+          "type": "blob",
+          "maxSize": 512000,
+          "description": "Stickers render one-per-post at full size, so a larger budget than inline emoji is acceptable."
+        },
+        "apng_512": {
+          "type": "blob",
+          "maxSize": 512000,
+          "description": "Stickers render one-per-post at full size, so a larger budget than inline emoji is acceptable."
+        },
+        "lottie": {
+          "type": "blob",
+          "maxSize": 512000,
+          "description": "Stickers render one-per-post at full size, so a larger budget than inline emoji is acceptable."
+        }
       }
-    },
-    "blob_sticker": {
-      "type": "blob",
-      "maxSize": 512000,
-      "description": "Stickers render one-per-post at full size, so a larger budget than inline emoji is acceptable."
-    },
-    "blob_v1": {
-      "type": "blob",
-      "maxSize": 128000,
-      "description": "Limiting blobs to 128kb because there may be many on page and these get optimised by ImgProxy anyway"
-    },
-    "blob_v0": {
-      "type": "blob",
-      "maxSize": 262144,
-      "description": "Limiting blobs to 256kb because there may be many on page and these get optimised by ImgProxy anyway"
-    },
-    "bytes_v0": {
-      "type": "bytes",
-      "maxLength": 65536,
-      "description": "64kb should be enough for anybody"
     },
     "itemView": {
       "type": "object",
-      "required": ["name", "formats"],
+      "required": [
+        "name",
+        "formats"
+      ],
       "properties": {
         "uri": {
           "type": "string",
@@ -120,19 +195,34 @@
           "format": "did",
           "description": "DID of the repo that owns this item's blobs."
         },
-        "name": { "type": "string" },
-        "alt": { "type": "string" },
-        "createdAt": { "type": "string", "format": "datetime" },
+        "name": {
+          "type": "string"
+        },
+        "alt": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "datetime"
+        },
         "formats": {
           "type": "union",
-          "refs": ["#formats_v0", "#formats_v1"]
+          "refs": [
+            "#formats_v0",
+            "#formats_v1"
+          ]
         },
         "stickerFormats": {
           "type": "union",
-          "refs": ["#stickerFormats_v0"],
+          "refs": [
+            "#stickerFormats_v0"
+          ],
           "closed": false
         },
-        "adultOnly": { "type": "boolean", "default": false },
+        "adultOnly": {
+          "type": "boolean",
+          "default": false
+        },
         "copyOf": {
           "type": "string",
           "format": "at-uri",
@@ -147,10 +237,18 @@
     },
     "originalCreator": {
       "type": "object",
-      "required": ["did", "handle"],
+      "required": [
+        "did",
+        "handle"
+      ],
       "properties": {
-        "did": { "type": "string", "format": "did" },
-        "handle": { "type": "string" }
+        "did": {
+          "type": "string",
+          "format": "did"
+        },
+        "handle": {
+          "type": "string"
+        }
       }
     }
   }

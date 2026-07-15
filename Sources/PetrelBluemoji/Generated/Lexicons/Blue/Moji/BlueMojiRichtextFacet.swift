@@ -1,0 +1,665 @@
+import Foundation
+import Petrel
+
+// lexicon: 1, id: blue.moji.richtext.facet
+
+public struct BlueMojiRichtextFacet: ATProtocolCodable, ATProtocolValue {
+    public static let typeIdentifier = "blue.moji.richtext.facet"
+    public let did: String
+    public let name: String
+    public let alt: String?
+    public let adultOnly: Bool?
+    public let labels: BlueMojiRichtextFacetLabelsUnion?
+    public let formats: BlueMojiRichtextFacetFormatsUnion
+
+    public init(did: String, name: String, alt: String?, adultOnly: Bool?, labels: BlueMojiRichtextFacetLabelsUnion?, formats: BlueMojiRichtextFacetFormatsUnion) {
+        self.did = did
+        self.name = name
+        self.alt = alt
+        self.adultOnly = adultOnly
+        self.labels = labels
+        self.formats = formats
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        did = try container.decode(String.self, forKey: .did)
+        name = try container.decode(String.self, forKey: .name)
+        alt = try container.decodeIfPresent(String.self, forKey: .alt)
+        adultOnly = try container.decodeIfPresent(Bool.self, forKey: .adultOnly)
+        labels = try container.decodeIfPresent(BlueMojiRichtextFacetLabelsUnion.self, forKey: .labels)
+        formats = try container.decode(BlueMojiRichtextFacetFormatsUnion.self, forKey: .formats)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(did, forKey: .did)
+        try container.encode(name, forKey: .name)
+        try container.encodeIfPresent(alt, forKey: .alt)
+        try container.encodeIfPresent(adultOnly, forKey: .adultOnly)
+        try container.encodeIfPresent(labels, forKey: .labels)
+        try container.encode(formats, forKey: .formats)
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(did)
+        hasher.combine(name)
+        if let value = alt {
+            hasher.combine(value)
+        } else {
+            hasher.combine(nil as Int?)
+        }
+        if let value = adultOnly {
+            hasher.combine(value)
+        } else {
+            hasher.combine(nil as Int?)
+        }
+        if let value = labels {
+            hasher.combine(value)
+        } else {
+            hasher.combine(nil as Int?)
+        }
+        hasher.combine(formats)
+    }
+
+    public func isEqual(to other: any ATProtocolValue) -> Bool {
+        guard let other = other as? Self else { return false }
+        if did != other.did {
+            return false
+        }
+        if name != other.name {
+            return false
+        }
+        if alt != other.alt {
+            return false
+        }
+        if adultOnly != other.adultOnly {
+            return false
+        }
+        if labels != other.labels {
+            return false
+        }
+        if formats != other.formats {
+            return false
+        }
+        return true
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.isEqual(to: rhs)
+    }
+
+    public func toCBORValue() throws -> Any {
+        var map = OrderedCBORMap()
+        let didValue = try did.toCBORValue()
+        map = map.adding(key: "did", value: didValue)
+        let nameValue = try name.toCBORValue()
+        map = map.adding(key: "name", value: nameValue)
+        if let value = alt {
+            let altValue = try value.toCBORValue()
+            map = map.adding(key: "alt", value: altValue)
+        }
+        if let value = adultOnly {
+            let adultOnlyValue = try value.toCBORValue()
+            map = map.adding(key: "adultOnly", value: adultOnlyValue)
+        }
+        if let value = labels {
+            let labelsValue = try value.toCBORValue()
+            map = map.adding(key: "labels", value: labelsValue)
+        }
+        let formatsValue = try formats.toCBORValue()
+        map = map.adding(key: "formats", value: formatsValue)
+        return map
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case did
+        case name
+        case alt
+        case adultOnly
+        case labels
+        case formats
+    }
+
+    public struct Formats_v1: ATProtocolCodable, ATProtocolValue {
+        public static let typeIdentifier = "blue.moji.richtext.facet#formatsV1"
+        public let png_128: CID?
+        public let webp_128: CID?
+        public let gif_128: CID?
+        public let apng_128: CID?
+        public let lottie: CID?
+
+        public init(
+            png_128: CID?, webp_128: CID?, gif_128: CID?, apng_128: CID?, lottie: CID?
+        ) {
+            self.png_128 = png_128
+            self.webp_128 = webp_128
+            self.gif_128 = gif_128
+            self.apng_128 = apng_128
+            self.lottie = lottie
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            do {
+                png_128 = try container.decodeIfPresent(CID.self, forKey: .png_128)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'png_128' — degrading to nil: \(error)")
+                png_128 = nil
+            }
+            do {
+                webp_128 = try container.decodeIfPresent(CID.self, forKey: .webp_128)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'webp_128' — degrading to nil: \(error)")
+                webp_128 = nil
+            }
+            do {
+                gif_128 = try container.decodeIfPresent(CID.self, forKey: .gif_128)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'gif_128' — degrading to nil: \(error)")
+                gif_128 = nil
+            }
+            do {
+                apng_128 = try container.decodeIfPresent(CID.self, forKey: .apng_128)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'apng_128' — degrading to nil: \(error)")
+                apng_128 = nil
+            }
+            do {
+                lottie = try container.decodeIfPresent(CID.self, forKey: .lottie)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'lottie' — degrading to nil: \(error)")
+                lottie = nil
+            }
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(Self.typeIdentifier, forKey: .typeIdentifier)
+            try container.encodeIfPresent(png_128, forKey: .png_128)
+            try container.encodeIfPresent(webp_128, forKey: .webp_128)
+            try container.encodeIfPresent(gif_128, forKey: .gif_128)
+            try container.encodeIfPresent(apng_128, forKey: .apng_128)
+            try container.encodeIfPresent(lottie, forKey: .lottie)
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            if let value = png_128 {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = webp_128 {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = gif_128 {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = apng_128 {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = lottie {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+        }
+
+        public func isEqual(to other: any ATProtocolValue) -> Bool {
+            guard let other = other as? Self else { return false }
+            if png_128 != other.png_128 {
+                return false
+            }
+            if webp_128 != other.webp_128 {
+                return false
+            }
+            if gif_128 != other.gif_128 {
+                return false
+            }
+            if apng_128 != other.apng_128 {
+                return false
+            }
+            if lottie != other.lottie {
+                return false
+            }
+            return true
+        }
+
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            return lhs.isEqual(to: rhs)
+        }
+
+        public func toCBORValue() throws -> Any {
+            var map = OrderedCBORMap()
+            map = map.adding(key: "$type", value: Self.typeIdentifier)
+            if let value = png_128 {
+                let png_128Value = try value.toCBORValue()
+                map = map.adding(key: "png_128", value: png_128Value)
+            }
+            if let value = webp_128 {
+                let webp_128Value = try value.toCBORValue()
+                map = map.adding(key: "webp_128", value: webp_128Value)
+            }
+            if let value = gif_128 {
+                let gif_128Value = try value.toCBORValue()
+                map = map.adding(key: "gif_128", value: gif_128Value)
+            }
+            if let value = apng_128 {
+                let apng_128Value = try value.toCBORValue()
+                map = map.adding(key: "apng_128", value: apng_128Value)
+            }
+            if let value = lottie {
+                let lottieValue = try value.toCBORValue()
+                map = map.adding(key: "lottie", value: lottieValue)
+            }
+            return map
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case typeIdentifier = "$type"
+            case png_128
+            case webp_128
+            case gif_128
+            case apng_128
+            case lottie
+        }
+    }
+
+    public struct Formats_v0: ATProtocolCodable, ATProtocolValue {
+        public static let typeIdentifier = "blue.moji.richtext.facet#formatsV0"
+        public let png_128: CID?
+        public let webp_128: CID?
+        public let gif_128: CID?
+        public let apng_128: Bool?
+        public let lottie: Bool?
+
+        public init(
+            png_128: CID?, webp_128: CID?, gif_128: CID?, apng_128: Bool?, lottie: Bool?
+        ) {
+            self.png_128 = png_128
+            self.webp_128 = webp_128
+            self.gif_128 = gif_128
+            self.apng_128 = apng_128
+            self.lottie = lottie
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            do {
+                png_128 = try container.decodeIfPresent(CID.self, forKey: .png_128)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'png_128' — degrading to nil: \(error)")
+                png_128 = nil
+            }
+            do {
+                webp_128 = try container.decodeIfPresent(CID.self, forKey: .webp_128)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'webp_128' — degrading to nil: \(error)")
+                webp_128 = nil
+            }
+            do {
+                gif_128 = try container.decodeIfPresent(CID.self, forKey: .gif_128)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'gif_128' — degrading to nil: \(error)")
+                gif_128 = nil
+            }
+            do {
+                apng_128 = try container.decodeIfPresent(Bool.self, forKey: .apng_128)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'apng_128' — degrading to nil: \(error)")
+                apng_128 = nil
+            }
+            do {
+                lottie = try container.decodeIfPresent(Bool.self, forKey: .lottie)
+            } catch {
+                // Forward compatibility: a malformed or unknown-shaped optional field
+                // must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'lottie' — degrading to nil: \(error)")
+                lottie = nil
+            }
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(Self.typeIdentifier, forKey: .typeIdentifier)
+            try container.encodeIfPresent(png_128, forKey: .png_128)
+            try container.encodeIfPresent(webp_128, forKey: .webp_128)
+            try container.encodeIfPresent(gif_128, forKey: .gif_128)
+            try container.encodeIfPresent(apng_128, forKey: .apng_128)
+            try container.encodeIfPresent(lottie, forKey: .lottie)
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            if let value = png_128 {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = webp_128 {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = gif_128 {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = apng_128 {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+            if let value = lottie {
+                hasher.combine(value)
+            } else {
+                hasher.combine(nil as Int?)
+            }
+        }
+
+        public func isEqual(to other: any ATProtocolValue) -> Bool {
+            guard let other = other as? Self else { return false }
+            if png_128 != other.png_128 {
+                return false
+            }
+            if webp_128 != other.webp_128 {
+                return false
+            }
+            if gif_128 != other.gif_128 {
+                return false
+            }
+            if apng_128 != other.apng_128 {
+                return false
+            }
+            if lottie != other.lottie {
+                return false
+            }
+            return true
+        }
+
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            return lhs.isEqual(to: rhs)
+        }
+
+        public func toCBORValue() throws -> Any {
+            var map = OrderedCBORMap()
+            map = map.adding(key: "$type", value: Self.typeIdentifier)
+            if let value = png_128 {
+                let png_128Value = try value.toCBORValue()
+                map = map.adding(key: "png_128", value: png_128Value)
+            }
+            if let value = webp_128 {
+                let webp_128Value = try value.toCBORValue()
+                map = map.adding(key: "webp_128", value: webp_128Value)
+            }
+            if let value = gif_128 {
+                let gif_128Value = try value.toCBORValue()
+                map = map.adding(key: "gif_128", value: gif_128Value)
+            }
+            if let value = apng_128 {
+                let apng_128Value = try value.toCBORValue()
+                map = map.adding(key: "apng_128", value: apng_128Value)
+            }
+            if let value = lottie {
+                let lottieValue = try value.toCBORValue()
+                map = map.adding(key: "lottie", value: lottieValue)
+            }
+            return map
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case typeIdentifier = "$type"
+            case png_128
+            case webp_128
+            case gif_128
+            case apng_128
+            case lottie
+        }
+    }
+
+    public enum BlueMojiRichtextFacetLabelsUnion: Codable, ATProtocolCodable, ATProtocolValue, Sendable, Equatable {
+        case comAtprotoLabelDefsSelfLabels(ComAtprotoLabelDefs.SelfLabels)
+        case unexpected(ATProtocolValueContainer)
+        public init(_ value: ComAtprotoLabelDefs.SelfLabels) {
+            self = .comAtprotoLabelDefsSelfLabels(value)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let typeValue = try container.decode(String.self, forKey: .type)
+
+            switch typeValue {
+            case "com.atproto.label.defs#selfLabels":
+                let value = try ComAtprotoLabelDefs.SelfLabels(from: decoder)
+                self = .comAtprotoLabelDefsSelfLabels(value)
+            default:
+                let unknownValue = try ATProtocolValueContainer(from: decoder)
+                self = .unexpected(unknownValue)
+            }
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+
+            switch self {
+            case let .comAtprotoLabelDefsSelfLabels(value):
+                try container.encode("com.atproto.label.defs#selfLabels", forKey: .type)
+                try value.encode(to: encoder)
+            case let .unexpected(container):
+                try container.encode(to: encoder)
+            }
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            switch self {
+            case let .comAtprotoLabelDefsSelfLabels(value):
+                hasher.combine("com.atproto.label.defs#selfLabels")
+                hasher.combine(value)
+            case let .unexpected(container):
+                hasher.combine("unexpected")
+                hasher.combine(container)
+            }
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case type = "$type"
+        }
+
+        public static func == (lhs: BlueMojiRichtextFacetLabelsUnion, rhs: BlueMojiRichtextFacetLabelsUnion) -> Bool {
+            switch (lhs, rhs) {
+            case let (.comAtprotoLabelDefsSelfLabels(lhsValue),
+                      .comAtprotoLabelDefsSelfLabels(rhsValue)):
+                return lhsValue == rhsValue
+            case let (.unexpected(lhsValue), .unexpected(rhsValue)):
+                return lhsValue.isEqual(to: rhsValue)
+            default:
+                return false
+            }
+        }
+
+        public func isEqual(to other: any ATProtocolValue) -> Bool {
+            guard let other = other as? BlueMojiRichtextFacetLabelsUnion else { return false }
+            return self == other
+        }
+
+        /// DAGCBOR encoding with field ordering
+        public func toCBORValue() throws -> Any {
+            // Create an ordered map to maintain field order
+            var map = OrderedCBORMap()
+
+            switch self {
+            case let .comAtprotoLabelDefsSelfLabels(value):
+                map = map.adding(key: "$type", value: "com.atproto.label.defs#selfLabels")
+
+                let valueDict = try value.toCBORValue()
+
+                // If the value is already an OrderedCBORMap, merge its entries
+                if let orderedMap = valueDict as? OrderedCBORMap {
+                    for (key, value) in orderedMap.entries where key != "$type" {
+                        map = map.adding(key: key, value: value)
+                    }
+                } else if let dict = valueDict as? [String: Any] {
+                    // Otherwise add each key-value pair from the dictionary
+                    for (key, value) in dict where key != "$type" {
+                        map = map.adding(key: key, value: value)
+                    }
+                }
+                return map
+            case let .unexpected(container):
+                return try container.toCBORValue()
+            }
+        }
+    }
+
+    public enum BlueMojiRichtextFacetFormatsUnion: Codable, ATProtocolCodable, ATProtocolValue, Sendable, Equatable {
+        case blueMojiRichtextFacetFormatsV0(BlueMojiRichtextFacet.Formats_v0)
+        case blueMojiRichtextFacetFormatsV1(BlueMojiRichtextFacet.Formats_v1)
+        case unexpected(ATProtocolValueContainer)
+        public init(_ value: BlueMojiRichtextFacet.Formats_v0) {
+            self = .blueMojiRichtextFacetFormatsV0(value)
+        }
+
+        public init(_ value: BlueMojiRichtextFacet.Formats_v1) {
+            self = .blueMojiRichtextFacetFormatsV1(value)
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let typeValue = try container.decode(String.self, forKey: .type)
+
+            switch typeValue {
+            case "blue.moji.richtext.facet#formats_v0":
+                let value = try BlueMojiRichtextFacet.Formats_v0(from: decoder)
+                self = .blueMojiRichtextFacetFormatsV0(value)
+            case "blue.moji.richtext.facet#formats_v1":
+                let value = try BlueMojiRichtextFacet.Formats_v1(from: decoder)
+                self = .blueMojiRichtextFacetFormatsV1(value)
+            default:
+                let unknownValue = try ATProtocolValueContainer(from: decoder)
+                self = .unexpected(unknownValue)
+            }
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+
+            switch self {
+            case let .blueMojiRichtextFacetFormatsV0(value):
+                try container.encode("blue.moji.richtext.facet#formats_v0", forKey: .type)
+                try value.encode(to: encoder)
+            case let .blueMojiRichtextFacetFormatsV1(value):
+                try container.encode("blue.moji.richtext.facet#formats_v1", forKey: .type)
+                try value.encode(to: encoder)
+            case let .unexpected(container):
+                try container.encode(to: encoder)
+            }
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            switch self {
+            case let .blueMojiRichtextFacetFormatsV0(value):
+                hasher.combine("blue.moji.richtext.facet#formats_v0")
+                hasher.combine(value)
+            case let .blueMojiRichtextFacetFormatsV1(value):
+                hasher.combine("blue.moji.richtext.facet#formats_v1")
+                hasher.combine(value)
+            case let .unexpected(container):
+                hasher.combine("unexpected")
+                hasher.combine(container)
+            }
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case type = "$type"
+        }
+
+        public static func == (lhs: BlueMojiRichtextFacetFormatsUnion, rhs: BlueMojiRichtextFacetFormatsUnion) -> Bool {
+            switch (lhs, rhs) {
+            case let (.blueMojiRichtextFacetFormatsV0(lhsValue),
+                      .blueMojiRichtextFacetFormatsV0(rhsValue)):
+                return lhsValue == rhsValue
+            case let (.blueMojiRichtextFacetFormatsV1(lhsValue),
+                      .blueMojiRichtextFacetFormatsV1(rhsValue)):
+                return lhsValue == rhsValue
+            case let (.unexpected(lhsValue), .unexpected(rhsValue)):
+                return lhsValue.isEqual(to: rhsValue)
+            default:
+                return false
+            }
+        }
+
+        public func isEqual(to other: any ATProtocolValue) -> Bool {
+            guard let other = other as? BlueMojiRichtextFacetFormatsUnion else { return false }
+            return self == other
+        }
+
+        /// DAGCBOR encoding with field ordering
+        public func toCBORValue() throws -> Any {
+            // Create an ordered map to maintain field order
+            var map = OrderedCBORMap()
+
+            switch self {
+            case let .blueMojiRichtextFacetFormatsV0(value):
+                map = map.adding(key: "$type", value: "blue.moji.richtext.facet#formats_v0")
+
+                let valueDict = try value.toCBORValue()
+
+                // If the value is already an OrderedCBORMap, merge its entries
+                if let orderedMap = valueDict as? OrderedCBORMap {
+                    for (key, value) in orderedMap.entries where key != "$type" {
+                        map = map.adding(key: key, value: value)
+                    }
+                } else if let dict = valueDict as? [String: Any] {
+                    // Otherwise add each key-value pair from the dictionary
+                    for (key, value) in dict where key != "$type" {
+                        map = map.adding(key: key, value: value)
+                    }
+                }
+                return map
+            case let .blueMojiRichtextFacetFormatsV1(value):
+                map = map.adding(key: "$type", value: "blue.moji.richtext.facet#formats_v1")
+
+                let valueDict = try value.toCBORValue()
+
+                // If the value is already an OrderedCBORMap, merge its entries
+                if let orderedMap = valueDict as? OrderedCBORMap {
+                    for (key, value) in orderedMap.entries where key != "$type" {
+                        map = map.adding(key: key, value: value)
+                    }
+                } else if let dict = valueDict as? [String: Any] {
+                    // Otherwise add each key-value pair from the dictionary
+                    for (key, value) in dict where key != "$type" {
+                        map = map.adding(key: key, value: value)
+                    }
+                }
+                return map
+            case let .unexpected(container):
+                return try container.toCBORValue()
+            }
+        }
+    }
+}

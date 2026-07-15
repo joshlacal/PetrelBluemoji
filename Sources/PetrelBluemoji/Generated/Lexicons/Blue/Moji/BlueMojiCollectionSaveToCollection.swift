@@ -1,0 +1,187 @@
+import Foundation
+import Petrel
+
+// lexicon: 1, id: blue.moji.collection.saveToCollection
+
+public enum BlueMojiCollectionSaveToCollection {
+    public static let typeIdentifier = "blue.moji.collection.saveToCollection"
+    public struct Input: ATProtocolCodable {
+        public let source: ATIdentifier
+        public let name: String
+        public let renameTo: String?
+
+        /// Standard public initializer
+        public init(source: ATIdentifier, name: String, renameTo: String? = nil) {
+            self.source = source
+            self.name = name
+            self.renameTo = renameTo
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            source = try container.decode(ATIdentifier.self, forKey: .source)
+            name = try container.decode(String.self, forKey: .name)
+            renameTo = try container.decodeIfPresent(String.self, forKey: .renameTo)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(source, forKey: .source)
+            try container.encode(name, forKey: .name)
+            try container.encodeIfPresent(renameTo, forKey: .renameTo)
+        }
+
+        public func toCBORValue() throws -> Any {
+            var map = OrderedCBORMap()
+            let sourceValue = try source.toCBORValue()
+            map = map.adding(key: "source", value: sourceValue)
+            let nameValue = try name.toCBORValue()
+            map = map.adding(key: "name", value: nameValue)
+            if let value = renameTo {
+                let renameToValue = try value.toCBORValue()
+                map = map.adding(key: "renameTo", value: renameToValue)
+            }
+            return map
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case source
+            case name
+            case renameTo
+        }
+    }
+
+    public struct Output: ATProtocolCodable {
+        public let uri: ATProtocolURI
+
+        public let item: BlueMojiCollectionItem.ItemView
+
+        /// Standard public initializer
+        public init(
+            uri: ATProtocolURI,
+
+            item: BlueMojiCollectionItem.ItemView
+
+        ) {
+            self.uri = uri
+
+            self.item = item
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+
+            uri = try container.decode(ATProtocolURI.self, forKey: .uri)
+
+            item = try container.decode(BlueMojiCollectionItem.ItemView.self, forKey: .item)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+
+            try container.encode(uri, forKey: .uri)
+
+            try container.encode(item, forKey: .item)
+        }
+
+        public func toCBORValue() throws -> Any {
+            var map = OrderedCBORMap()
+
+            let uriValue = try uri.toCBORValue()
+            map = map.adding(key: "uri", value: uriValue)
+
+            let itemValue = try item.toCBORValue()
+            map = map.adding(key: "item", value: itemValue)
+
+            return map
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case uri
+            case item
+        }
+    }
+
+    public enum Error: String, Swift.Error, ATProtoErrorType, CustomStringConvertible {
+        case emojiNotFound = "EmojiNotFound.Indicates the named Bluemoji was not found in the source repo."
+        case destinationExists = "DestinationExists.Indicates another Bluemoji with the same name already exists in the source repo. Set renameTo to rename."
+        public var description: String {
+            return rawValue
+        }
+
+        public var errorName: String {
+            // Extract just the error name from the raw value
+            let parts = rawValue.split(separator: ".")
+            return String(parts.first ?? "")
+        }
+    }
+}
+
+public extension ATProtoClient.Blue.Moji.Collection {
+    // MARK: - saveToCollection
+
+    // Copy a single emoji from another repo. Requires auth.
+    //
+    // - Parameter input: The input parameters for the request
+
+    ///
+    /// - Returns: A tuple containing the HTTP response code and the decoded response data
+    /// - Throws: NetworkError if the request fails or the response cannot be processed
+    func saveToCollection(
+        input: BlueMojiCollectionSaveToCollection.Input
+
+    ) async throws -> (responseCode: Int, data: BlueMojiCollectionSaveToCollection.Output?) {
+        let endpoint = "blue.moji.collection.saveToCollection"
+
+        var headers: [String: String] = [:]
+
+        headers["Content-Type"] = "application/json"
+
+        headers["Accept"] = "application/json"
+
+        let requestData: Data? = try JSONEncoder().encode(input)
+
+        let queryItems: [URLQueryItem]? = nil
+
+        let urlRequest = try await networkService.createURLRequest(
+            endpoint: endpoint,
+            method: "POST",
+            headers: headers,
+            body: requestData,
+            queryItems: queryItems
+        )
+
+        // Determine service DID for this endpoint
+        let serviceDID = await networkService.getServiceDID(for: "blue.moji.collection.saveToCollection")
+        let proxyHeaders = serviceDID.map { ["atproto-proxy": $0] }
+        let (responseData, response) = try await networkService.performRequest(urlRequest, skipTokenRefresh: false, additionalHeaders: proxyHeaders)
+        let responseCode = response.statusCode
+
+        // Only validate Content-Type and decode on success. Error responses
+        // (4xx/5xx) may have missing or different Content-Type headers and
+        // are handled by the caller via the status code.
+        if (200 ... 299).contains(responseCode) {
+            guard let contentType = response.allHeaderFields["Content-Type"] as? String else {
+                throw NetworkError.invalidContentType(expected: "application/json", actual: "nil")
+            }
+
+            if !contentType.lowercased().contains("application/json") {
+                throw NetworkError.invalidContentType(expected: "application/json", actual: contentType)
+            }
+
+            do {
+                let decoder = JSONDecoder()
+                let decodedData = try decoder.decode(BlueMojiCollectionSaveToCollection.Output.self, from: responseData)
+
+                return (responseCode, decodedData)
+            } catch {
+                // Log the decoding error for debugging but still return the response code
+                LogManager.logError("Failed to decode successful response for blue.moji.collection.saveToCollection: \(error)")
+                return (responseCode, nil)
+            }
+        } else {
+            // Don't try to decode error responses as success types
+            return (responseCode, nil)
+        }
+    }
+}

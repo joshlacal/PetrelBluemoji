@@ -1,0 +1,170 @@
+import Foundation
+import Petrel
+
+// lexicon: 1, id: blue.moji.feed.getReactions
+
+public enum BlueMojiFeedGetReactions {
+    public static let typeIdentifier = "blue.moji.feed.getReactions"
+    public struct Parameters: Parametrizable {
+        public let uri: ATProtocolURI
+        public let limit: Int?
+        public let cursor: String?
+
+        public init(
+            uri: ATProtocolURI,
+            limit: Int? = nil,
+            cursor: String? = nil
+        ) {
+            self.uri = uri
+            self.limit = limit
+            self.cursor = cursor
+        }
+    }
+
+    public struct Output: ATProtocolCodable {
+        public let uri: ATProtocolURI
+
+        public let cursor: String?
+
+        public let groups: [BlueMojiFeedDefs.ReactionGroup]
+
+        public let reactions: [BlueMojiFeedDefs.ReactionView]
+
+        /// Standard public initializer
+        public init(
+            uri: ATProtocolURI,
+
+            cursor: String? = nil,
+
+            groups: [BlueMojiFeedDefs.ReactionGroup],
+
+            reactions: [BlueMojiFeedDefs.ReactionView]
+
+        ) {
+            self.uri = uri
+
+            self.cursor = cursor
+
+            self.groups = groups
+
+            self.reactions = reactions
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+
+            uri = try container.decode(ATProtocolURI.self, forKey: .uri)
+
+            do {
+                cursor = try container.decodeIfPresent(String.self, forKey: .cursor)
+            } catch {
+                // Forward compatibility: a malformed optional field must not fail the whole response.
+                LogManager.logWarning("Decoding error for optional property 'cursor' — degrading to nil: \(error)")
+                cursor = nil
+            }
+
+            groups = try container.decode([BlueMojiFeedDefs.ReactionGroup].self, forKey: .groups)
+
+            reactions = try container.decode([BlueMojiFeedDefs.ReactionView].self, forKey: .reactions)
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+
+            try container.encode(uri, forKey: .uri)
+
+            // Encode optional property even if it's an empty array
+            try container.encodeIfPresent(cursor, forKey: .cursor)
+
+            try container.encode(groups, forKey: .groups)
+
+            try container.encode(reactions, forKey: .reactions)
+        }
+
+        public func toCBORValue() throws -> Any {
+            var map = OrderedCBORMap()
+
+            let uriValue = try uri.toCBORValue()
+            map = map.adding(key: "uri", value: uriValue)
+
+            if let value = cursor {
+                // Encode optional property even if it's an empty array for CBOR
+                let cursorValue = try value.toCBORValue()
+                map = map.adding(key: "cursor", value: cursorValue)
+            }
+
+            let groupsValue = try groups.toCBORValue()
+            map = map.adding(key: "groups", value: groupsValue)
+
+            let reactionsValue = try reactions.toCBORValue()
+            map = map.adding(key: "reactions", value: reactionsValue)
+
+            return map
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case uri
+            case cursor
+            case groups
+            case reactions
+        }
+    }
+}
+
+public extension ATProtoClient.Blue.Moji.Feed {
+    // MARK: - getReactions
+
+    /// Get reactions for a post: aggregated per-emoji groups plus a paginated list of individual reactions.
+    ///
+    /// - Parameter input: The input parameters for the request
+    ///
+    /// - Returns: A tuple containing the HTTP response code and the decoded response data
+    /// - Throws: NetworkError if the request fails or the response cannot be processed
+    func getReactions(input: BlueMojiFeedGetReactions.Parameters) async throws -> (responseCode: Int, data: BlueMojiFeedGetReactions.Output?) {
+        let endpoint = "blue.moji.feed.getReactions"
+
+        let queryItems = input.asQueryItems()
+
+        let urlRequest = try await networkService.createURLRequest(
+            endpoint: endpoint,
+            method: "GET",
+            headers: ["Accept": "application/json"],
+            body: nil,
+            queryItems: queryItems
+        )
+
+        // Determine service DID for this endpoint
+        let serviceDID = await networkService.getServiceDID(for: "blue.moji.feed.getReactions")
+        let proxyHeaders = serviceDID.map { ["atproto-proxy": $0] }
+        let (responseData, response) = try await networkService.performRequest(urlRequest, skipTokenRefresh: false, additionalHeaders: proxyHeaders)
+        let responseCode = response.statusCode
+
+        // Only validate Content-Type and decode on success. Error responses
+        // (4xx/5xx) may have missing or different Content-Type headers and
+        // are handled via the status code / structured error parser below.
+        if (200 ... 299).contains(responseCode) {
+            guard let contentType = response.allHeaderFields["Content-Type"] as? String else {
+                throw NetworkError.invalidContentType(expected: "application/json", actual: "nil")
+            }
+
+            if !contentType.lowercased().contains("application/json") {
+                throw NetworkError.invalidContentType(expected: "application/json", actual: contentType)
+            }
+
+            do {
+                let decoder = JSONDecoder()
+                let decodedData = try decoder.decode(BlueMojiFeedGetReactions.Output.self, from: responseData)
+
+                return (responseCode, decodedData)
+            } catch {
+                // Log the decoding error for debugging but still return the response code
+                LogManager.logError("Failed to decode successful response for blue.moji.feed.getReactions: \(error)")
+                return (responseCode, nil)
+            }
+        } else {
+            // If we can't parse a structured error, return the response code
+            // (maintains backward compatibility for endpoints without defined errors)
+            return (responseCode, nil)
+        }
+    }
+}
