@@ -1,6 +1,6 @@
 {
   "$comment": "Overlay manifest for blue.moji.* lexicons. Run from the Petrel repo root: python3 run.py --manifest ../PetrelBluemoji/manifests/petrel-bluemoji.json --language swift",
-  "package": { "kind": "overlay", "name": "PetrelBluemoji" },
+  "package": { "kind": "overlay", "name": "PetrelBluemoji", "core_namespace_roots": ["blue"] },
   "lexicons": {
     "emit": ["../PetrelBluemoji/lexicons"],
     "reference": ["generator/lexicons"],
