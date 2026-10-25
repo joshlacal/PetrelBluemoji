@@ -118,7 +118,7 @@ public enum BlueMojiFeedDefs {
         public let viewer: ATProtocolURI?
 
         public init(
-            emoji: BlueMojiFeedReaction.EmojiRef, count: Int, viewer: ATProtocolURI?
+            emoji: BlueMojiFeedReaction.EmojiRef, count: Int, viewer: ATProtocolURI? = nil
         ) {
             self.emoji = emoji
             self.count = count

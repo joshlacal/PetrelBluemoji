@@ -13,7 +13,7 @@ public struct BlueMojiRichtextFacet: ATProtocolCodable, ATProtocolValue {
     public let labels: BlueMojiRichtextFacetLabelsUnion?
     public let formats: BlueMojiRichtextFacetFormatsUnion
 
-    public init(did: String, name: String, alt: String?, adultOnly: Bool?, labels: BlueMojiRichtextFacetLabelsUnion?, formats: BlueMojiRichtextFacetFormatsUnion) {
+    public init(did: String, name: String, alt: String? = nil, adultOnly: Bool? = nil, labels: BlueMojiRichtextFacetLabelsUnion? = nil, formats: BlueMojiRichtextFacetFormatsUnion) {
         self.did = did
         self.name = name
         self.alt = alt
@@ -131,7 +131,7 @@ public struct BlueMojiRichtextFacet: ATProtocolCodable, ATProtocolValue {
         public let lottie: CID?
 
         public init(
-            png_128: CID?, webp_128: CID?, gif_128: CID?, apng_128: CID?, lottie: CID?
+            png_128: CID? = nil, webp_128: CID? = nil, gif_128: CID? = nil, apng_128: CID? = nil, lottie: CID? = nil
         ) {
             self.png_128 = png_128
             self.webp_128 = webp_128
@@ -291,7 +291,7 @@ public struct BlueMojiRichtextFacet: ATProtocolCodable, ATProtocolValue {
         public let lottie: Bool?
 
         public init(
-            png_128: CID?, webp_128: CID?, gif_128: CID?, apng_128: Bool?, lottie: Bool?
+            png_128: CID? = nil, webp_128: CID? = nil, gif_128: CID? = nil, apng_128: Bool? = nil, lottie: Bool? = nil
         ) {
             self.png_128 = png_128
             self.webp_128 = webp_128

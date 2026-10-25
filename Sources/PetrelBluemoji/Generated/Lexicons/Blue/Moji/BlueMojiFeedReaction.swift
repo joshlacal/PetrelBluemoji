@@ -11,7 +11,7 @@ public struct BlueMojiFeedReaction: ATProtocolCodable, ATProtocolValue {
     public let emoji: EmojiRef
     public let createdAt: ATProtocolDate
 
-    public init(subject: ATProtocolURI, subjectCid: CID?, emoji: EmojiRef, createdAt: ATProtocolDate) {
+    public init(subject: ATProtocolURI, subjectCid: CID? = nil, emoji: EmojiRef, createdAt: ATProtocolDate) {
         self.subject = subject
         self.subjectCid = subjectCid
         self.emoji = emoji
@@ -107,7 +107,7 @@ public struct BlueMojiFeedReaction: ATProtocolCodable, ATProtocolValue {
         public let formats: EmojiRefFormatsUnion
 
         public init(
-            uri: ATProtocolURI, cid: CID?, name: String, alt: String?, adultOnly: Bool?, formats: EmojiRefFormatsUnion
+            uri: ATProtocolURI, cid: CID? = nil, name: String, alt: String? = nil, adultOnly: Bool? = nil, formats: EmojiRefFormatsUnion
         ) {
             self.uri = uri
             self.cid = cid

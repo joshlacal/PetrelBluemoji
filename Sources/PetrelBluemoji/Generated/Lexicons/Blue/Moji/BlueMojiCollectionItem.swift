@@ -16,7 +16,7 @@ public struct BlueMojiCollectionItem: ATProtocolCodable, ATProtocolValue {
     public let copyOf: ATProtocolURI?
     public let fallbackText: String?
 
-    public init(name: String, alt: String?, createdAt: ATProtocolDate, formats: BlueMojiCollectionItemFormatsUnion, stickerFormats: BlueMojiCollectionItemStickerFormatsUnion?, adultOnly: Bool?, labels: BlueMojiCollectionItemLabelsUnion?, copyOf: ATProtocolURI?, fallbackText: String?) {
+    public init(name: String, alt: String? = nil, createdAt: ATProtocolDate, formats: BlueMojiCollectionItemFormatsUnion, stickerFormats: BlueMojiCollectionItemStickerFormatsUnion? = nil, adultOnly: Bool? = nil, labels: BlueMojiCollectionItemLabelsUnion? = nil, copyOf: ATProtocolURI? = nil, fallbackText: String? = nil) {
         self.name = name
         self.alt = alt
         self.createdAt = createdAt
@@ -222,7 +222,7 @@ public struct BlueMojiCollectionItem: ATProtocolCodable, ATProtocolValue {
         public let lottie: Bytes?
 
         public init(
-            original: Blob?, png_128: Blob?, apng_128: Bytes?, gif_128: Blob?, webp_128: Blob?, lottie: Bytes?
+            original: Blob? = nil, png_128: Blob? = nil, apng_128: Bytes? = nil, gif_128: Blob? = nil, webp_128: Blob? = nil, lottie: Bytes? = nil
         ) {
             self.original = original
             self.png_128 = png_128
@@ -406,7 +406,7 @@ public struct BlueMojiCollectionItem: ATProtocolCodable, ATProtocolValue {
         public let lottie: Blob?
 
         public init(
-            original: Blob?, png_128: Blob?, apng_128: Blob?, gif_128: Blob?, webp_128: Blob?, lottie: Blob?
+            original: Blob? = nil, png_128: Blob? = nil, apng_128: Blob? = nil, gif_128: Blob? = nil, webp_128: Blob? = nil, lottie: Blob? = nil
         ) {
             self.original = original
             self.png_128 = png_128
@@ -589,7 +589,7 @@ public struct BlueMojiCollectionItem: ATProtocolCodable, ATProtocolValue {
         public let lottie: Blob?
 
         public init(
-            png_512: Blob?, webp_512: Blob?, gif_512: Blob?, apng_512: Blob?, lottie: Blob?
+            png_512: Blob? = nil, webp_512: Blob? = nil, gif_512: Blob? = nil, apng_512: Blob? = nil, lottie: Blob? = nil
         ) {
             self.png_512 = png_512
             self.webp_512 = webp_512
@@ -755,7 +755,7 @@ public struct BlueMojiCollectionItem: ATProtocolCodable, ATProtocolValue {
         public let originalCreator: OriginalCreator?
 
         public init(
-            uri: ATProtocolURI?, cid: CID?, did: DID?, name: String, alt: String?, createdAt: ATProtocolDate?, formats: ItemViewFormatsUnion, stickerFormats: ItemViewStickerFormatsUnion?, adultOnly: Bool?, copyOf: ATProtocolURI?, originalCreator: OriginalCreator?
+            uri: ATProtocolURI? = nil, cid: CID? = nil, did: DID? = nil, name: String, alt: String? = nil, createdAt: ATProtocolDate? = nil, formats: ItemViewFormatsUnion, stickerFormats: ItemViewStickerFormatsUnion? = nil, adultOnly: Bool? = nil, copyOf: ATProtocolURI? = nil, originalCreator: OriginalCreator? = nil
         ) {
             self.uri = uri
             self.cid = cid
@@ -1415,6 +1415,8 @@ public struct BlueMojiCollectionItem: ATProtocolCodable, ATProtocolValue {
             }
         }
     }
+
+    public typealias Bytes_v0 = Bytes
 
     public enum ItemViewFormatsUnion: Codable, ATProtocolCodable, ATProtocolValue, Sendable, Equatable {
         case blueMojiCollectionItemFormatsV0(BlueMojiCollectionItem.Formats_v0)

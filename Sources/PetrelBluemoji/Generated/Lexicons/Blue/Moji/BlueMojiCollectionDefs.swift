@@ -21,7 +21,7 @@ public enum BlueMojiCollectionDefs {
         public let indexedAt: ATProtocolDate
 
         public init(
-            uri: ATProtocolURI, cid: CID, creator: AppBskyActorDefs.ProfileView, name: String, description: String?, descriptionFacets: [AppBskyRichtextFacet]?, avatar: URI?, collectionItemCount: Int?, labels: [ComAtprotoLabelDefs.Label]?, indexedAt: ATProtocolDate
+            uri: ATProtocolURI, cid: CID, creator: AppBskyActorDefs.ProfileView, name: String, description: String? = nil, descriptionFacets: [AppBskyRichtextFacet]? = nil, avatar: URI? = nil, collectionItemCount: Int? = nil, labels: [ComAtprotoLabelDefs.Label]? = nil, indexedAt: ATProtocolDate
         ) {
             self.uri = uri
             self.cid = cid

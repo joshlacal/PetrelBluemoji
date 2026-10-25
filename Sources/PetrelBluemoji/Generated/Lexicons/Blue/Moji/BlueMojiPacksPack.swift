@@ -14,7 +14,7 @@ public struct BlueMojiPacksPack: ATProtocolCodable, ATProtocolValue {
     public let createdAt: ATProtocolDate
     public let labels: BlueMojiPacksPackLabelsUnion?
 
-    public init(name: String, description: String?, descriptionFacets: [BlueMojiRichtextFacet]?, icon: Blob?, adultOnly: Bool?, createdAt: ATProtocolDate, labels: BlueMojiPacksPackLabelsUnion?) {
+    public init(name: String, description: String? = nil, descriptionFacets: [BlueMojiRichtextFacet]? = nil, icon: Blob? = nil, adultOnly: Bool? = nil, createdAt: ATProtocolDate, labels: BlueMojiPacksPackLabelsUnion? = nil) {
         self.name = name
         self.description = description
         self.descriptionFacets = descriptionFacets

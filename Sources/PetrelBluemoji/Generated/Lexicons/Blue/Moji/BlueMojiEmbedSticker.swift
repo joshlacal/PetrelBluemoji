@@ -59,7 +59,7 @@ public struct BlueMojiEmbedSticker: ATProtocolCodable, ATProtocolValue {
         public let formats: StickerFormatsUnion
 
         public init(
-            record: ComAtprotoRepoStrongRef?, did: DID, name: String, alt: String?, aspectRatio: AppBskyEmbedDefs.AspectRatio?, formats: StickerFormatsUnion
+            record: ComAtprotoRepoStrongRef? = nil, did: DID, name: String, alt: String? = nil, aspectRatio: AppBskyEmbedDefs.AspectRatio? = nil, formats: StickerFormatsUnion
         ) {
             self.record = record
             self.did = did
@@ -218,7 +218,7 @@ public struct BlueMojiEmbedSticker: ATProtocolCodable, ATProtocolValue {
         public let lottie: CID?
 
         public init(
-            png_512: CID?, webp_512: CID?, gif_512: CID?, apng_512: CID?, lottie: CID?
+            png_512: CID? = nil, webp_512: CID? = nil, gif_512: CID? = nil, apng_512: CID? = nil, lottie: CID? = nil
         ) {
             self.png_512 = png_512
             self.webp_512 = webp_512
@@ -436,7 +436,7 @@ public struct BlueMojiEmbedSticker: ATProtocolCodable, ATProtocolValue {
         public let labels: [ComAtprotoLabelDefs.Label]?
 
         public init(
-            fullsize: URI, thumb: URI?, name: String, alt: String?, aspectRatio: AppBskyEmbedDefs.AspectRatio?, record: ComAtprotoRepoStrongRef?, labels: [ComAtprotoLabelDefs.Label]?
+            fullsize: URI, thumb: URI? = nil, name: String, alt: String? = nil, aspectRatio: AppBskyEmbedDefs.AspectRatio? = nil, record: ComAtprotoRepoStrongRef? = nil, labels: [ComAtprotoLabelDefs.Label]? = nil
         ) {
             self.fullsize = fullsize
             self.thumb = thumb

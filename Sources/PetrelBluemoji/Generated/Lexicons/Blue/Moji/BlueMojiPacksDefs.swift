@@ -21,7 +21,7 @@ public enum BlueMojiPacksDefs {
         public let indexedAt: ATProtocolDate?
 
         public init(
-            uri: ATProtocolURI, cid: CID, name: String, description: String?, descriptionFacets: [BlueMojiRichtextFacet]?, avatar: URI?, itemCount: Int?, labels: [ComAtprotoLabelDefs.Label]?, viewer: PackViewerState?, indexedAt: ATProtocolDate?
+            uri: ATProtocolURI, cid: CID, name: String, description: String? = nil, descriptionFacets: [BlueMojiRichtextFacet]? = nil, avatar: URI? = nil, itemCount: Int? = nil, labels: [ComAtprotoLabelDefs.Label]? = nil, viewer: PackViewerState? = nil, indexedAt: ATProtocolDate? = nil
         ) {
             self.uri = uri
             self.cid = cid
@@ -278,7 +278,7 @@ public enum BlueMojiPacksDefs {
         public let indexedAt: ATProtocolDate
 
         public init(
-            uri: ATProtocolURI, cid: CID, creator: AppBskyActorDefs.ProfileView, name: String, description: String?, descriptionFacets: [AppBskyRichtextFacet]?, avatar: URI?, packItemCount: Int?, labels: [ComAtprotoLabelDefs.Label]?, viewer: PackViewerState?, indexedAt: ATProtocolDate
+            uri: ATProtocolURI, cid: CID, creator: AppBskyActorDefs.ProfileView, name: String, description: String? = nil, descriptionFacets: [AppBskyRichtextFacet]? = nil, avatar: URI? = nil, packItemCount: Int? = nil, labels: [ComAtprotoLabelDefs.Label]? = nil, viewer: PackViewerState? = nil, indexedAt: ATProtocolDate
         ) {
             self.uri = uri
             self.cid = cid
@@ -604,7 +604,7 @@ public enum BlueMojiPacksDefs {
         public let savedToCollection: Bool?
 
         public init(
-            savedToCollection: Bool?
+            savedToCollection: Bool? = nil
         ) {
             self.savedToCollection = savedToCollection
         }
